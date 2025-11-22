@@ -1,0 +1,16 @@
+name: Vulnerable Pipeline
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Normal step
+        run: |
+          echo "===== Step légitime ====="
+          echo "Valeur secrète masquée : $DEMO_SECRET"
+        env:
+          DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
